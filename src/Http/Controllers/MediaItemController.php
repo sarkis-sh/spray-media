@@ -53,7 +53,7 @@ class MediaItemController
     /**
      * Update the filename (without re-upload) for a MediaItem record.
      */
-    public function updateFileName(UpdateMediaItemRequest $request, int $id): JsonResponse
+    public function updateFileName(UpdateMediaItemRequest $request, mixed $id): JsonResponse
     {
         $newFileName = $request->validated('new_file_name');
         $media = $this->mediaService->updateFilename($id, $newFileName);
@@ -68,7 +68,7 @@ class MediaItemController
     /**
      * Delete a MediaItem record and its file.
      */
-    public function delete(int $id): JsonResponse
+    public function delete(mixed $id): JsonResponse
     {
         $this->mediaService->delete($id);
 

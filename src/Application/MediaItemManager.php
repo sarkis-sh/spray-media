@@ -93,10 +93,10 @@ class MediaItemManager
     /**
      * Update an existing MediaItem record by id.
      *
-     * @param int $id MediaItem id.
+     * @param mixed $id MediaItem id.
      * @param array<string, mixed> $data Attributes to update.
      */
-    public function updateMediaItem(int $id, array $data): bool
+    public function updateMediaItem(mixed $id, array $data): bool
     {
         return $this->repository->update($id, $data);
     }
@@ -104,7 +104,7 @@ class MediaItemManager
     /**
      * Delete a MediaItem record by id.
      */
-    public function deleteMediaItem(int $id): bool
+    public function deleteMediaItem(mixed $id): bool
     {
         $deleted = $this->repository->delete($id);
         if (!$deleted) {
@@ -117,7 +117,7 @@ class MediaItemManager
     /**
      * Find a MediaItem record or throw a domain exception if missing.
      */
-    public function findMediaItemOrFail(int $mediaId): MediaItem
+    public function findMediaItemOrFail(mixed $mediaId): MediaItem
     {
         $media = $this->repository->find($mediaId);
         if (!$media) {

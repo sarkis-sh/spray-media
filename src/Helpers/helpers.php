@@ -130,7 +130,7 @@ if (!function_exists('find_media_item_or_fail')) {
     /**
      * Find a MediaItem record or throw if missing.
      */
-    function find_media_item_or_fail(int $id): MediaItem
+    function find_media_item_or_fail(mixed $id): MediaItem
     {
         return app(MediaItemManager::class)->findMediaItemOrFail($id);
     }
@@ -140,7 +140,7 @@ if (!function_exists('media_item_delete_file')) {
     /**
      * Delete a media file by id.
      */
-    function media_item_delete_file(int $id): bool
+    function media_item_delete_file(mixed $id): bool
     {
         $manager = app(MediaItemManager::class);
         $media = $manager->findMediaItemOrFail($id);
@@ -152,7 +152,7 @@ if (!function_exists('media_item_delete_with_file')) {
     /**
      * Delete a MediaItem record (and its file) by id.
      */
-    function media_item_delete_with_file(int $id): bool
+    function media_item_delete_with_file(mixed $id): bool
     {
         $manager = app(MediaItemManager::class);
         $media = $manager->findMediaItemOrFail($id);

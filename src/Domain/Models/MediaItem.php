@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Eloquent model representing a stored MediaItem record.
  *
- * @property int $id
+ * @property mixed $id
  * @property string $path
  * @property string $disk
  * @property string $filename

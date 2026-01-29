@@ -24,25 +24,25 @@ interface MediaItemRepositoryInterface
     /**
      * Retrieves a MediaItem record by its primary key.
      *
-     * @param int $id The primary key of the MediaItem record.
+     * @param mixed $id The primary key of the MediaItem record.
      * @return MediaItem|null The found MediaItem model instance, or null if not found.
      */
-    public function find($id): ?MediaItem;
+    public function find(mixed $id): ?MediaItem;
 
     /**
      * Updates an existing MediaItem record in the database.
      *
-     * @param int $id The primary key of the MediaItem record to update.
+     * @param mixed $id The primary key of the MediaItem record to update.
      * @param array<string, mixed> $data The new attributes to apply.
      * @return bool Returns true if the record was successfully updated, false otherwise.
      */
-    public function update($id, array $data): bool;
+    public function update(mixed $id, array $data): bool;
 
     /**
      * Deletes a MediaItem record from the database by its primary key.
      *
-     * @param int $id The primary key of the MediaItem record to delete.
+     * @param mixed $id The primary key of the MediaItem record to delete.
      * @return bool Returns true if the record was successfully deleted, false otherwise.
      */
-    public function delete($id): bool;
+    public function delete(mixed $id): bool;
 }

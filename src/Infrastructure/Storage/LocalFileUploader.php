@@ -42,6 +42,12 @@ class LocalFileUploader implements FileUploaderInterface
         // We pass the disk name in the options array, which is the correct way.
         $path = $file->store($fullDirectory, ['disk' => $targetDisk]);
 
+        $mimeType = $file->getMimeType();
+
+        if ($mimeType === 'application/octet-stream') {
+            $mimeType = Storage::disk($targetDisk)->mimeType($path);
+        }
+
         $originalBaseName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $sanitizedBaseName = FilenameSanitizer::sanitize($originalBaseName);
         $extension = $file->getClientOriginalExtension();
@@ -54,7 +60,7 @@ class LocalFileUploader implements FileUploaderInterface
             'filename'              => $sanitizedBaseName,
             'formatted_filename'    => $sanitizedFormatted,
             'extension'             => $extension,
-            'mime_type'             => $file->getClientMimeType(),
+            'mime_type'             => $mimeType,
             'size'                  => $file->getSize(),
         ];
     }
@@ -83,5 +89,4 @@ class LocalFileUploader implements FileUploaderInterface
     {
         return Storage::disk($media->disk)->path($media->path);
     }
-
 }

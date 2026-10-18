@@ -10,13 +10,18 @@ use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\ValidationException;
 use SprayMedia\Application\MediaItemManager;
+use SprayMedia\Console\PrunePendingUploadsCommand;
+use SprayMedia\Contracts\DirectUploadPolicyInterface;
 use SprayMedia\Contracts\FileServerInterface;
 use SprayMedia\Contracts\FileUploaderInterface;
 use SprayMedia\Contracts\MediaItemRepositoryInterface;
 use SprayMedia\Contracts\PayloadValidatorInterface;
 use SprayMedia\Contracts\ResponseAdapterInterface;
 use SprayMedia\Contracts\MediaItemUrlGeneratorInterface;
+use SprayMedia\Contracts\UploadUrlSignerInterface;
 use SprayMedia\Domain\Exceptions\MediaException;
+use SprayMedia\Infrastructure\DirectUploads\AllowAllDirectUploadPolicy;
+use SprayMedia\Infrastructure\DirectUploads\DiskUploadUrlSigner;
 use SprayMedia\Infrastructure\Http\DefaultResponseAdapter;
 use SprayMedia\Infrastructure\Persistence\EloquentMediaItemRepository;
 use SprayMedia\Infrastructure\Serving\LocalFileServer;
@@ -57,6 +62,8 @@ class SprayMediaServiceProvider extends ServiceProvider
             PayloadValidatorInterface::class => ['config' => 'bindings.payload_validator', 'default' => HmacPayloadValidator::class, 'singleton' => true],
             FileServerInterface::class => ['config' => 'bindings.file_server', 'default' => LocalFileServer::class, 'singleton' => true],
             ResponseAdapterInterface::class => ['config' => 'bindings.response_adapter', 'default' => DefaultResponseAdapter::class, 'singleton' => true],
+            DirectUploadPolicyInterface::class => ['config' => 'bindings.direct_upload_policy', 'default' => AllowAllDirectUploadPolicy::class],
+            UploadUrlSignerInterface::class => ['config' => 'bindings.upload_url_signer', 'default' => DiskUploadUrlSigner::class, 'singleton' => true],
         ];
 
         foreach ($bindings as $contract => $meta) {
@@ -81,6 +88,7 @@ class SprayMediaServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->registerPublishing();
+            $this->commands([PrunePendingUploadsCommand::class]);
         }
 
         // 1. Register the package's routes.

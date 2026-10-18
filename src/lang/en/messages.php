@@ -14,4 +14,13 @@ return [
     'file_missing_on_disk' => 'File is missing on disk.',
     'upload_failed' => 'Unable to upload file.',
     'bad_request' => 'The given data was invalid.',
+    'upload_url_created' => 'Upload the file to the given URL, then complete the upload.',
+    'direct_uploads_disabled' => 'Direct uploads are not enabled.',
+    'direct_uploads_unsupported' => 'The storage does not support direct uploads.',
+    'invalid_upload_token' => 'Invalid upload token.',
+    'upload_expired' => 'The upload has expired. Start it again.',
+    'upload_not_received' => 'The file was not received. Upload it, then complete the upload.',
+    'upload_size_mismatch' => 'The uploaded file is not the size that was declared.',
+    'upload_too_large' => 'The uploaded file is too large.',
+    'upload_type_not_allowed' => 'This type of file is not allowed.',
 ];

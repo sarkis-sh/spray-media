@@ -43,6 +43,10 @@ return [
         'payload_validator' => \SprayMedia\Infrastructure\Validation\HmacPayloadValidator::class,
         'file_server' => \SprayMedia\Infrastructure\Serving\LocalFileServer::class,
         'response_adapter' => \SprayMedia\Infrastructure\Http\DefaultResponseAdapter::class,
+
+        // Direct uploads (see 'direct_uploads' below).
+        'direct_upload_policy' => \SprayMedia\Infrastructure\DirectUploads\AllowAllDirectUploadPolicy::class,
+        'upload_url_signer' => \SprayMedia\Infrastructure\DirectUploads\DiskUploadUrlSigner::class,
     ],
 
     /*
@@ -194,6 +198,73 @@ return [
          * since the last request, saving bandwidth by responding with a "304".
          */
         'enable_etag' => env('SPRAY_MEDIA_ENABLE_ETAG', true),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Serving
+    |--------------------------------------------------------------------------
+    |
+    | How a signed link hands out its file once the signature checks out.
+    |
+    | 'stream'   PHP reads the file from the disk and sends it (the default,
+    |            and the only way for a local disk).
+    | 'redirect' the client is sent to a short-lived URL of the disk itself
+    |            (S3, Cloudflare R2, MinIO, ...), so the bytes never pass
+    |            through PHP. A disk that cannot make temporary URLs is
+    |            streamed all the same.
+    |
+    */
+    'serving' => [
+        'mode' => env('SPRAY_MEDIA_SERVE_MODE', 'stream'),
+
+        // How long the disk's own URL is valid for, in minutes.
+        'redirect_expiration_minutes' => (int) env('SPRAY_MEDIA_REDIRECT_EXPIRATION_MINUTES', 5),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Direct Uploads
+    |--------------------------------------------------------------------------
+    |
+    | Lets a client send a file straight to the disk (S3, Cloudflare R2,
+    | MinIO, ...) instead of through PHP, in three steps:
+    |
+    |   1. POST {prefix}/direct-uploads             name, type and size -> a
+    |      short-lived upload URL and a token. Checked against 'upload' above
+    |      and against the direct upload policy before any URL is given.
+    |   2. PUT the file to that URL.
+    |   3. POST {prefix}/direct-uploads/complete    the token -> the media
+    |      item, as an ordinary upload returns it. The file's real size and
+    |      type (read from its first bytes) are checked here: object storage
+    |      does not hold a signed upload to the size or type it was asked for.
+    |
+    | Nothing is written to the database before step 3: the token carries the
+    | upload, encrypted. The file waits under base_dir/pending_dir, and is
+    | moved to its place, within the disk, once it passes. Uploads that never
+    | complete are cleared by `php artisan spray-media:prune-pending`.
+    |
+    | The disk has to make temporary upload URLs (an S3 disk does).
+    |
+    */
+    'direct_uploads' => [
+        'enabled' => (bool) env('SPRAY_MEDIA_DIRECT_UPLOADS', false),
+
+        // The disk files are uploaded to; null uses 'disk' above.
+        'disk' => env('SPRAY_MEDIA_DIRECT_UPLOADS_DISK'),
+
+        // Where files wait for step 3, under base_dir.
+        'pending_dir' => env('SPRAY_MEDIA_PENDING_DIR', 'pending'),
+
+        // How long the upload URL of step 1 accepts the file, in minutes.
+        'url_expiration_minutes' => (int) env('SPRAY_MEDIA_UPLOAD_URL_EXPIRATION_MINUTES', 10),
+
+        // How long after step 1 step 3 is accepted, in minutes; also the age
+        // after which prune-pending clears a file that never completed.
+        'token_expiration_minutes' => (int) env('SPRAY_MEDIA_UPLOAD_TOKEN_EXPIRATION_MINUTES', 60),
+
+        // How much of the file is read to tell its real type.
+        'sniff_bytes' => 4096,
     ],
 
 ];

@@ -14,4 +14,13 @@ return [
     'file_missing_on_disk' => 'الملف غير موجود على التخزين.',
     'upload_failed' => 'تعذّر رفع الملف.',
     'bad_request' => 'البيانات المرسلة غير صالحة.',
+    'upload_url_created' => 'ارفع الملف على الرابط المرفق، ثم أكمل الرفع.',
+    'direct_uploads_disabled' => 'الرفع المباشر غير مفعّل.',
+    'direct_uploads_unsupported' => 'التخزين لا يدعم الرفع المباشر.',
+    'invalid_upload_token' => 'رمز الرفع غير صالح.',
+    'upload_expired' => 'انتهت مهلة الرفع. ابدأ من جديد.',
+    'upload_not_received' => 'لم يصل الملف. ارفعه، ثم أكمل الرفع.',
+    'upload_size_mismatch' => 'حجم الملف المرفوع لا يطابق الحجم المصرَّح به.',
+    'upload_too_large' => 'الملف المرفوع أكبر من المسموح.',
+    'upload_type_not_allowed' => 'هذا النوع من الملفات غير مسموح.',
 ];
